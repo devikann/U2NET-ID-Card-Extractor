@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ID Card Background Removal</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        h1 {
+            margin-top: 40px;
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .square-box {
+            width: 180px;
+            height: 180px;
+            background-color: #1e1e1e;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.3s;
+            text-align: center;
+        }
+
+        .square-box:hover {
+            background-color: #333;
+            transform: scale(1.05);
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .image-preview {
+            display: flex;
+            gap: 50px;
+            justify-content: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .image-preview img {
+            max-height: 300px;
+            border: 2px solid white;
+            border-radius: 8px;
+        }
+
+        .download-link {
+            margin-top: 20px;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+        }
+
+        .download-link:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>ID Card Background Removal</h1>
+
+    <div class="button-container">
+        <!-- Capture Photo Button -->
+        <div class="square-box" onclick="openCamera()">Capture Photo</div>
+
+        <!-- Upload Image Button -->
+        <label class="square-box">
+            Upload Image
+            <form id="upload-form" action="/upload" method="post" enctype="multipart/form-data">
+                <input type="file" name="image" accept="image/*" onchange="this.form.submit()">
+            </form>
+        </label>
+    </div>
+
+    {% if uploaded_img and extracted_img %}
+    <div class="image-preview">
+        <div>
+            <p>Uploaded Image</p>
+            <img src="{{ url_for('static', filename='uploads/' + uploaded_img) }}" alt="Uploaded Image">
+        </div>
+        <div>
+            <p>Extracted ID Card</p>
+            <img src="{{ url_for('static', filename='outputs/' + extracted_img) }}" alt="Extracted Image">
+        </div>
+    </div>
+    <a class="download-link" href="{{ url_for('static', filename='outputs/' + extracted_img) }}" download>Download Extracted Image</a>
+    {% endif %}
+
+    <video id="video" width="300" height="220" autoplay style="display: none;"></video>
+    <canvas id="canvas" width="300" height="220" style="display: none;"></canvas>
+
+    <!-- Take Photo Button -->
+    <button id="snapBtn" style="display: none; margin-top: 20px;">Take Photo</button>
+
+    <form id="capture-form" action="/upload" method="post">
+    <input type="hidden" name="captured_image" id="captured_image">
+    </form>
+    <script>
+function openCamera() {
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const snapBtn = document.getElementById('snapBtn');
+
+    video.style.display = 'block';
+    snapBtn.style.display = 'inline-block';
+
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => {
+            video.srcObject = stream;
+
+            snapBtn.onclick = () => {
+                canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+                const imageData = canvas.toDataURL('image/jpeg');
+                document.getElementById('captured_image').value = imageData;
+
+                // Stop the stream
+                stream.getTracks().forEach(track => track.stop());
+
+                // Submit the form
+                document.getElementById('capture-form').submit();
+            };
+        })
+        .catch(err => {
+            alert("Camera not accessible: " + err);
+        });
+}
+</script>
+</body>
+</html>
