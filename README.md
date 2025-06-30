@@ -17,7 +17,7 @@ This project implements an AI-based ID card background removal system using deep
 - Flask – API development
 - HTML, CSS, JavaScript – frontend integration
 - Label Studio – dataset annotation and mask creation
-- 
+  
 [How ro Run](url)
 
 1. Clone the repository
