@@ -1,15 +1,15 @@
-[Deep Learning-Based U²-Net ID Card Background Remover](url)
+**#Deep Learning-Based U²-Net ID Card Background Remover**
 
 This project implements an AI-based ID card background removal system using deep learning (U²-Net) and computer vision techniques. It automatically extracts the ID card from any image while removing complex backgrounds.
 
-[Features](url)
+Features
 
 - Uses U²-Net deep learning architecture for accurate foreground-background segmentation.
 - Removes the background from ID card images while preserving key details such as photo, text, and barcode.
 - Supports image upload and webcam capture through an integrated web interface.
 - Deployed via a Flask API, enabling real-time processing.
-- 
-[Technologies Used](url)
+
+Technologies Used
 
 - Python
 - PyTorch – model implementation and training
@@ -18,7 +18,7 @@ This project implements an AI-based ID card background removal system using deep
 - HTML, CSS, JavaScript – frontend integration
 - Label Studio – dataset annotation and mask creation
   
-[How ro Run](url)
+How ro Run
 
 1. Clone the repository
 2. Install dependencies:pip install -r requirements.txt
